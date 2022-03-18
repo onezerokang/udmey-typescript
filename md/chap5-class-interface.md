@@ -202,4 +202,53 @@ readonly는 특정 속성이 초기화되고 나면 이후에는 변경되어서
 > Modifier를 '한정자'라고 번역하는 것 같음.
 > Access Modifier: 접근 한정자
 
-## Quiz: Basic Class
+## 내용 보강(필독)
+
+ES6의 클래스는 클래스의 속성을 반드시 생성자 내부에서 선언하고 초기화 해야 한다.
+
+```ts
+class Department {
+  constructor(name) {
+    this.name = name;
+  }
+}
+```
+
+하지만 TS에서는 위 처럼 하면 에러가 발생한다.
+Class 몸체에 클래스 프로퍼티를 사전 선언해야 한다.
+
+```ts
+class Department {
+  name: string;
+  constructor(name) {
+    this.name = name;
+  }
+}
+```
+
+접근 제한자(Access Modifier)
+TS는 접근제한자, 즉 public, private, protected를 지원한다.
+단 접근 제한자를 명시하지 않았을 때 타 클래스 기반 언어는 protected로 지정되는데
+TS는 public으로 선언된다.
+
+private과 protected를 사용하면 class 인스턴스를 통해 클래스 외부에서 참조를 못한다(수정뿐만 아님)
+
+3. 생성자 파라미터(constructor) 접근 제한자 선언
+   이때 접근 제한자가 사용된 생성자 파라미터는 암묵적으로 클래스 프로퍼티로 선언되고
+   생성자 내부에서 별도의 초기화가 없어도 암묵적으로 초기화가 수행된다.
+
+만일 생성자 파라미터에 접근 제한자를 선언하지 않으면 생성자 파라미터는 생성자 내부에서만 유효한 지역 변수가 되어 생성자 외부에서 참조가 불가능하게 된다.
+
+```ts
+class Foo {
+  // x는 생성자 내부에서만 유효한 지역 변수이다.
+  constructor(x: string) {
+    console.log(x);
+  }
+}
+
+const foo = new Foo("Hello");
+console.log(foo); // Foo {}
+```
+
+4. readonly
