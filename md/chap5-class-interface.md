@@ -204,6 +204,8 @@ readonly는 특정 속성이 초기화되고 나면 이후에는 변경되어서
 
 ## 내용 보강(필독)
 
+> https://poiemaweb.com/typescript-class
+
 ES6의 클래스는 클래스의 속성을 반드시 생성자 내부에서 선언하고 초기화 해야 한다.
 
 ```ts
