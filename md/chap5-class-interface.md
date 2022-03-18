@@ -170,13 +170,12 @@ JS는 최근까지 private, public modifier 개념이 없었기 때문에 컴파
 
 ## Shorthand Initalization
 
+아래처럼 작성하면 constructor 내부에서 this.id = id; this.name = name을 생략해도 된다. 그리고 따로 modifier를 사용할 필요도 없음.
+
 ```ts
 class Department {
   private employees: string[] = [];
-  constructor(public id: string, private name: string) {
-    this.id = id;
-    this.name = name;
-  }
+  constructor(public id: string, private name: string) {}
 
   describe(this: Department) {
     console.log(`Department (${this.id}: ${this.name})`);
@@ -199,5 +198,8 @@ readonly modifier
 TS에만 있는 기능.
 readonly는 특정 속성이 초기화되고 나면 이후에는 변경되어서는 안 된다는 점을
 명확히 하기 위해 추가적인 안정성, 의도 명확.
+
+> Modifier를 '한정자'라고 번역하는 것 같음.
+> Access Modifier: 접근 한정자
 
 ## Quiz: Basic Class

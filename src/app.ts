@@ -3,8 +3,8 @@
 class Department {
   private employees: string[] = [];
   constructor(public readonly id: string, private name: string) {
-    this.id = id;
-    this.name = name;
+    // this.id = id;
+    // this.name = name;
   }
 
   describe(this: Department) {
@@ -21,8 +21,5 @@ class Department {
 }
 
 const accounting = new Department("0", "Accounting");
-accounting.addEmployee("Max");
-accounting.addEmployee("Manu");
 
 accounting.describe();
-accounting.printEmployeeInformation();
