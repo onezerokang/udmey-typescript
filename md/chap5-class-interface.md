@@ -254,3 +254,141 @@ console.log(foo); // Foo {}
 ```
 
 4. readonly
+
+## inheritance
+
+```ts
+// 이 클래스의 문제는 employees를 외부에서 변경할 수 있다는 것.
+
+class Department {
+  private employees: string[] = [];
+  constructor(public readonly id: string, private name: string) {
+    // this.id = id;
+    // this.name = name;
+  }
+
+  describe(this: Department) {
+    console.log(`Department (${this.id}: ${this.name})`);
+  }
+  addEmployee(employee: string) {
+    this.employees.push(employee);
+  }
+
+  printEmployeeInformation() {
+    console.log(this.employees.length);
+    console.log(this.employees);
+  }
+}
+
+// 따로 constructor를 설정하지 않는 이상 상속한 Class의 constructor를 사용한다.
+class ITDepartment extends Department {
+  constructor(id: string, public admins: string[]) {
+    // 다른 클래스로부터 상속받는 클래스에 고유 생성자(constructor)를 추가할 때 마다
+    // 상속하는 클래스로 super를 추가하고 이를 함수처럼 실행해야 한다.
+    // 여기서 super는 기본 클래스의 생성자를 호출한다.
+    // 상속받은 속성 외의 속성을 할당하려면 super부터 호출해야 한다.
+    super(id, "IT");
+    this.admins = admins;
+  }
+}
+
+class AccountingDepartment extends Department {
+  constructor(id: string, private reports: string[]) {
+    super(id, "Accounting");
+  }
+
+  addReport(text: string) {
+    this.reports.push(text);
+  }
+
+  printReports() {
+    console.log(this.reports);
+  }
+}
+
+const it = new ITDepartment("0", ["Max"]);
+const accounting = new AccountingDepartment("0", []);
+
+accounting.addReport("Something went wrong...");
+accounting.printReports();
+
+it.describe();
+console.log(it);
+```
+
+## Overriding Properties & The "protected" Modifier
+
+기본 클래스의 메서드나 속성도 재정의(Override) 할 수 있다.
+고유의 구현을 추가하여 기본 클래스 구현 대신 추가한 구현을 적용할 수 있다.
+중요한 점은 속성에 대한 접근을 protected로 지정해야 한다는 것이다.
+private으로 지정하면 상속받은 클래스에서 해당 속성에 접근, 수정할 수 없다.
+
+## Getter & Setter
+
+getter와 setter는 JS에서도 지원하는 문법이다.
+이들은 로직을 캡슐화 하고 속성을 읽거나 설정하려 할 때 실행되어야 하는 추가적인 로직을 추가하는데 유용하다(validation)
+
+getter는 값을 가지고 올 때 함수나 메서드를 실행하는 속성으로
+개발자가 더 복잡한 로직을 추가할 수 있게 해준다.
+getter를 사용할 때는 속성처럼 접근해야 하여 `()`를 붙이지 않는다.
+
+setter도 마찬가지로 속성에 접근하듯이 사용해야 하는데 괄호가 아닌 등호(=)를 사용해야 한다.
+
+## Static Methods & Properties
+
+Static properties와 methods(정적 속성, 정적 메서드)를 사용하여 클래스의 인스턴스에서 접근할 수 없는 속성과 메서드를 클래스에 추가할 수 있다.
+이는 주로 논리적으로 그룹화하거나 클래스에 매핑하려는 유틸리티 함수나
+클래스에 저장하고자 하는 전역 상수에 사용된다.
+
+예시
+
+```js
+Math.random();
+Math.PI;
+```
+
+위 예시는 Math의 인스턴스에서 접근할 수 없는 메서드와 속성이므로 new Math를 호출할 필요 없다. 이처럼 Math는 그룹화 매커니즘의 네임스페이스와 같은 역할을 한다.
+
+**클래스를 그룹화 매커니즘으로 사용하는 것**
+
+정적 메서드와 속성을 선언하기 위해서는 속성 혹은 메서드 앞에 `static`키워드를 붙여주면 된다. 단 정적으로 선언할 경우, class 내부(constructor, getter, setter)등에서도 사용할 수 없다(this를 사용해서.. 왜냐면 this는 인스턴스를 참조하기 때문에).
+
+정적 속성과 메서드는 인스턴스와 분리되어있다. 여기 접근하려면
+`ClassName.staticProperties`로 사용해야 한다.
+
+## Abstract Classes(추상 클래스)_æbstrækt_
+
+인스턴스화 될 수 없고 확장되어야 하는 클래스
+
+## Singletons & Private Constructors
+
+객체 지향 프로그래밍에는 싱글턴 패턴이라는 것이 있다.
+싱글턴 패턴: 특정 클래스의 인스턴스를 정확히 하나만 갖게 한다.
+이 패턴은 정적 메서드나 속성을 사용할 수 없거나 사용하지 않고자 하는 동시에
+클래스를 기반으로 여러 객체를 만들 수 없지만 항상 클래스를 기반으로 정확히 하나의 객체만 가질 수 있도록 하고자 하는 경우에 유용한다.
+
+```ts
+class AccountingDepartment extends Department {
+  private static instance: AccountingDepartment;
+  private constructor(id: string, private reports: string[]) {
+    super(id);
+  }
+
+  static getInstance() {
+    if (AccountingDepartment.instance) {
+      return this.instance;
+    }
+    this.instance = new AccountingDepartment("d1", []);
+    return this.instance;
+  }
+}
+
+const accounting = AccountingDepartment.getInstance();
+```
+
+private constructor를 사용하면 new 키워드로 인스턴스를 생성할 수 없다.
+따라서 클래스 내에서만 정적 메서드를 사용해서만 접근이 가능하다.
+
+getIntance는 클래스의 인스턴스가 이미 있는지 확인하고 없다면 새 인스턴스를 반환한다.
+
+## Class 요약
