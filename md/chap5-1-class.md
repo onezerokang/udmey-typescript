@@ -1,4 +1,4 @@
-# Class and Interface
+# Class
 
 ## What's Object-oriented Programming?
 
